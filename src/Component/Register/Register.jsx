@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
 import auth from "../../firebase/firebase.config";
 import { useState } from "react";
 import { FaEye,FaEyeSlash } from "react-icons/fa";
@@ -16,7 +16,8 @@ const Register = () => {
         const email = e.target.email.value;
         const password = e.target.password.value;
         const conditions = e.target.terms.checked;
-        console.log(email,password,conditions)
+        const name = e.target.name.value;
+        console.log(email,password,conditions,name)
         
         // if(password.length<6){
         //     setRegisterError('Password should be at least 6 characters or longer');
@@ -43,6 +44,13 @@ const Register = () => {
             console.log(result.user)
             setSuccess('user created successfully')
             // setRegisterError('user create successfully')
+            updateProfile(result.user, {displayName:name})
+            .then(()=>{
+                console.log('profile updated')
+            })
+            .catch(()=>{
+                console.log('error check')
+            })
             sendEmailVerification(result.user)
             .then(()=>{
             alert('please verify your account')
@@ -61,7 +69,7 @@ const Register = () => {
             <form onSubmit={handleRegister}>
                 <div className="mx-auto w-1/3">
                 <input className="mb-4 px-2 py-2 w-full" type="email" name="email" placeholder="enter your email account" required/> <br />
-
+                <input className="mb-4 px-2 py-2 w-full" type="text" name="name" placeholder="enter your name" required/> <br/>
                 <div className="relative">
                 <input className=" px-2 py-2 w-full"
                 type={showPassword?"text":"password"} name="password" 
